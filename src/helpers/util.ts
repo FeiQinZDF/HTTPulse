@@ -114,12 +114,9 @@ export async function readTextFromClipboard() {
 }
 
 export async function reload() {
-  if (isWebMode()) {
-    window.location.reload();
-  } else {
-    const { relaunch } = await import("@tauri-apps/api/process");
-    await relaunch();
-  }
+  // 统一使用 window.location.reload() 来刷新页面
+  // 这样更稳定,避免在连续重启时出现问题
+  window.location.reload();
 }
 
 export async function delay(ms: number) {

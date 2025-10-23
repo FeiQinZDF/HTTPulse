@@ -76,11 +76,11 @@ function convertAPIConfigToHTTP(config: APIConfig): string {
     }
   }
 
-  // 添加请求?
+  // 添加请求体
   if (config.request.body) {
     lines.push("");
     try {
-      // 尝试格式?JSON
+      // 尝试格式化JSON
       if (
         config.request.contentType === "application/json" ||
         config.request.body.trim().startsWith("{") ||
@@ -98,6 +98,35 @@ function convertAPIConfigToHTTP(config: APIConfig): string {
     } catch {
       lines.push(config.request.body);
     }
+  }
+
+  // 添加响应处理脚本
+  if (config.request.responseHandler) {
+    lines.push("");
+    // 清理 responseHandler：移除外层的 {% %} (如果有的话)
+    let handler = config.request.responseHandler.trim();
+    
+    // 如果被多层 {% %} 包装，移除外层
+    while (handler.startsWith('{%') && handler.endsWith('%}')) {
+      const inner = handler.substring(2, handler.length - 2).trim();
+      // 检查内层是否也是 {% %} 格式
+      if (inner.startsWith('{%') && inner.endsWith('%}')) {
+        handler = inner;
+      } else {
+        // 内层不是 {% %} 格式，说明当前层是正确的
+        break;
+      }
+    }
+    
+    // 现在 handler 应该是 {% script %} 格式
+    // 添加 > 前缀
+    const handlerLines = handler.split("\n");
+    handlerLines.forEach(line => {
+      const trimmedLine = line.trim();
+      if (trimmedLine) {
+        lines.push(`> ${trimmedLine}`);
+      }
+    });
   }
 
   lines.push("");

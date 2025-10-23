@@ -114,7 +114,7 @@
     importTablesTips: "导入数据会先清空原有数据，确认是否导入？",
     importTablesSuccess: "数据已成功导入，应用将在3秒后重启",
     customizeVariableSetting: "变量设置",
-    langChangeSuccess: "修改语言配置成功，应用将在3秒后重启",
+    langChangeSuccess: "修改语言配置成功,页面将在3秒后刷新",
     browser: "浏览器",
     timeoutSetting: "请求超时设置",
     timeoutConnect: "连接超时(秒)",

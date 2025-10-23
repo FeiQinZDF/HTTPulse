@@ -35,17 +35,30 @@ const app = createApp(Root);
 
 async function init() {
   initWindowEvent();
-  showSplashscreen();
+  // 只在首次加载时显示启动屏幕，刷新时不显示
+  // 通过检查 sessionStorage 来判断是否是刷新
+  if (!sessionStorage.getItem('app_initialized')) {
+    sessionStorage.setItem('app_initialized', 'true');
+    showSplashscreen();
+  }
   // TODO 校验数据库版本
   // 判断是否需要升级级别
   await handleDatabaseCompatible();
-  const lang = (await getLang()) || LANG.zh;
+  let lang = (await getLang()) || LANG.zh;
+  // 验证语言设置是否有效，如果无效则默认为中文
+  if (lang !== LANG.zh && lang !== LANG.en) {
+    console.log(`检测到无效的语言设置: ${lang}，重置为中文`);
+    lang = LANG.zh;
+    // 更新存储的语言设置
+    const { setLang } = await import("./stores/local");
+    await setLang(lang);
+  }
   changeI18nLocale(lang);
   app.use(router);
   // 非浏览器模式打开上次打开的页面
   if (!isWebMode()) {
     const route = await getAppLatestRoute();
-    if (route.name) {
+    if (route && route.name) {
       goTo(route.name, {
         query: route.query,
       });

@@ -9,7 +9,13 @@ import VitePluginLinaria from "vite-plugin-linaria";
 export default defineConfig({
   server: {
     port: 3000,
+    watch: {
+      // 强制监视文件变化
+      usePolling: true,
+    },
   },
+  // 禁用缓存，确保开发时总是使用最新文件
+  cacheDir: '.vite-cache',
   plugins: [
     vue(),
     vueJsx(),

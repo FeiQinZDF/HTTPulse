@@ -348,15 +348,22 @@ export default defineComponent({
     };
 
     const handleChangeLang = async (lang: string) => {
-      if (lang === getCurrentLang()) {
+      const currentLang = getCurrentLang();
+      
+      // 如果选择的语言与当前语言相同，直接返回
+      if (lang === currentLang) {
         return;
       }
+      
+      // 验证语言是否有效
+      if (lang !== LANG.zh && lang !== LANG.en) {
+        return;
+      }
+      
       try {
         await setLang(lang);
-        message.info(i18nSetting("langChangeSuccess"));
-        setTimeout(() => {
-          reload();
-        }, 3000);
+        // 直接刷新页面，不需要延迟和通知
+        reload();
       } catch (err) {
         showError(message, err);
       }
@@ -553,10 +560,6 @@ export default defineComponent({
         label: "English",
         key: LANG.en,
       },
-      {
-        label: "Українська",
-        key: LANG.uk,
-      },
     ];
 
     return (
@@ -605,6 +608,7 @@ export default defineComponent({
               </NDropdown>
               <NDropdown
                 options={langs}
+                value={getCurrentLang()}
                 onSelect={(key: string) => {
                   this.handleChangeLang(key);
                 }}

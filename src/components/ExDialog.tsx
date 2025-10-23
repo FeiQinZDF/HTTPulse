@@ -31,6 +31,10 @@ import {
 import { CloudUploadOutline } from "@vicons/ionicons5";
 import { importAPI, ImportCategory } from "../commands/import_api";
 import { isHTTPFormat } from "../helpers/import";
+import { importFromSwaggerUI } from "../helpers/swagger_import";
+import { createAPISetting } from "../commands/api_setting";
+import { createAPIFolder } from "../commands/api_folder";
+import { NInput } from "naive-ui";
 
 interface OnConfirm {
   (data: ExUpdateData): Promise<void>;
@@ -106,6 +110,7 @@ const ImportEditor = defineComponent({
 
     const currentTab = ref(ImportCategory.Text);
     const fileData = ref("");
+    const swaggerUrl = ref("");
 
     let editorIns: editor.IStandaloneCodeEditor | null;
     const destroyEditor = () => {
@@ -146,18 +151,41 @@ const ImportEditor = defineComponent({
       }
       processing.value = true;
       try {
-        if (currentTab.value === ImportCategory.Text) {
-          if (editorIns) {
-            fileData.value = editorIns.getValue();
-          } else {
-            fileData.value = "";
+        let topIDList: string[] = [];
+        
+        // Swagger URL 导入
+        if (currentTab.value === "swagger_url") {
+          if (!swaggerUrl.value.trim()) {
+            throw new Error("请输入 Swagger UI 地址");
           }
+          const result = await importFromSwaggerUI(swaggerUrl.value.trim(), props.collection);
+          
+          // 先创建文件夹
+          for (const folder of result.folders) {
+            await createAPIFolder(folder);
+          }
+          
+          // 再创建接口
+          for (const setting of result.settings) {
+            await createAPISetting(setting);
+          }
+          
+          // 返回文件夹 ID 列表
+          topIDList = result.folders.map(f => f.id);
+        } else {
+          if (currentTab.value === ImportCategory.Text) {
+            if (editorIns) {
+              fileData.value = editorIns.getValue();
+            } else {
+              fileData.value = "";
+            }
+          }
+          topIDList = await importAPI({
+            category: currentTab.value,
+            collection: props.collection,
+            fileData: fileData.value.trim(),
+          });
         }
-        const topIDList = await importAPI({
-          category: currentTab.value,
-          collection: props.collection,
-          fileData: fileData.value.trim(),
-        });
         // 如果指定了目录
         if (props.folder && topIDList.length) {
           await apiFolderStore.addChild({
@@ -212,6 +240,7 @@ const ImportEditor = defineComponent({
       handleImport,
       processing,
       codeEditor,
+      swaggerUrl,
     };
   },
   render() {
@@ -270,6 +299,27 @@ const ImportEditor = defineComponent({
             tab="File/Postman/Insonmia/Swagger"
           >
             {uploadWrapper}
+          </NTabPane>
+          <NTabPane
+            name="swagger_url"
+            tab="Swagger URL"
+          >
+            <div style={{ padding: "20px" }}>
+              <div style={{ marginBottom: "10px" }}>
+                <NText>请输入 Swagger UI 地址:</NText>
+              </div>
+              <NInput
+                v-model:value={this.swaggerUrl}
+                placeholder="例如: http://192.168.1.8:20256/doc.html"
+                clearable
+              />
+              <div style={{ marginTop: "10px", fontSize: "12px", color: "var(--n-text-color-disabled)" }}>
+                <NText depth="3">
+                  支持的格式: Swagger 2.0 / OpenAPI 3.0<br />
+                  程序会自动尝试常见的 API 文档地址 (v3/api-docs, v2/api-docs 等)
+                </NText>
+              </div>
+            </div>
           </NTabPane>
         </NTabs>
         <div class="tar">

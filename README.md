@@ -14,12 +14,12 @@
 <a href="https://github.com/vicanso/HTTPulse">HTTPulse</a> is API tool based on <a href="https://github.com/tauri-apps/tauri">tauri</a>.
 </h3>
 
-English|[简体中文](./README_zh.md)|[Українська](./README_uk.md)
+English|[简体中文](./README_zh.md)
 ## Features
 
 - Support macos, windows and linux platforms, the installation package is below 10MB
 - Thousands of interfaces for a single project are opened in seconds, with low memory usage
-- Support dark/light theme and chinese/english/ukrainian
+- Support dark/light theme and chinese/english
 - Operation and configuration is simple
 - Support importing configuration from postman, insonmia or swagger.
 - The configuration can be exported by interface, function and project, which is convenient for sharing

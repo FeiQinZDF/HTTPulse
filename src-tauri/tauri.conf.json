@@ -107,7 +107,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "Cyber API",
+        "title": "HTTPulse",
         "width": 1200,
         "center": true,
         "visible": false 

@@ -49,6 +49,7 @@ export interface HTTPRequest {
   headers: KVParam[];
   query: KVParam[];
   auth: KVParam[];
+  responseHandler?: string; // 响应处理脚本
 }
 
 function convertKVListToURLValues(kvList: KVParam[]) {

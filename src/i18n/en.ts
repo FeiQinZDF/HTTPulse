@@ -120,7 +120,7 @@ export default {
       "Restore success, and the application will restart in 3 seconds",
     customizeVariableSetting: "Variable",
     langChangeSuccess:
-      "Language configuration is modified successfully, and the application will restart in 3 seconds",
+      "Language configuration is modified successfully, and the page will refresh in 3 seconds",
     browser: "Browser",
     timeoutSetting: "Request Timeout",
     timeoutConnect: "Connect Timeout(s)",

@@ -5,7 +5,9 @@
   "scripts": {
     "format": "prettier --write src/*.ts src/*.tsx src/**/*.ts src/**/*.tsx src/**/**/*.tsx",
     "lint": "eslint . --ext .js,.tsx,.ts --fix && vue-tsc --noEmit",
+    "clean": "node -e \"const fs=require('fs');['node_modules/.vite','.vite-cache','dist'].forEach(d=>{try{fs.rmSync(d,{recursive:true,force:true})}catch(e){}})\"",
     "dev": "vite",
+    "dev:clean": "npm run clean && vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "tauri": "tauri"

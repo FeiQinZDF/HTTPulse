@@ -5,6 +5,11 @@ lint:
 fmt:
 	cd src-tauri && cargo fmt --all --
 dev:
+	@echo "Cleaning cache..."
+	@if exist "node_modules\\.vite" rmdir /s /q "node_modules\\.vite" 2>nul || true
+	@if exist ".vite-cache" rmdir /s /q ".vite-cache" 2>nul || true
+	@if exist "dist" rmdir /s /q "dist" 2>nul || true
+	@echo "Starting dev server..."
 	cargo tauri dev
 icon:
 	cargo tauri icon ./HTTPulse.png
