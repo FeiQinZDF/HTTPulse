@@ -96,6 +96,8 @@ export default defineComponent({
         await apiFolderStore.fetch(collection);
         await apiSettingStore.fetch(collection);
         await useEnvironmentStore().fetch(collection);
+        // 初始化新的环境系统
+        await useEnvironmentsStore().initialize();
         await useGlobalReqHeaderStore().fetch(collection);
         const collectionStore = useAPICollectionStore();
         const result = await collectionStore.get(collection);

@@ -228,8 +228,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const settingStore = useSettingStore();
     const message = useMessage();
+    const settingStore = useSettingStore();
     const dialog = useDialog();
     const collectionStore = useAPICollectionStore();
     const codeEditor = ref<HTMLElement>();
@@ -379,7 +379,7 @@ export default defineComponent({
       httpText.value = newText;
     }, 250);
 
-    // 当params或interfaceName变化时，同步更新httpText（如果不是从Http tab触发的更新）
+    // 当params或interfaceName变化时，同步更新httpText（如果不是从 Http tab 触发的更新）
     watch(
       () => [props.params.method, props.params.uri, props.params.query, props.params.headers, props.params.body, props.params.responseHandler, props.interfaceName],
       () => {

@@ -65,17 +65,12 @@ export const useAPISettingStore = defineStore("apiSettings", {
       if (req.uri) {
         req.uri = environmentsStore.replaceVariables(req.uri);
       }
-      const variables = useGlobalReqHeaderStore().listEnable();
-      if (variables) {
-        if (!req.headers) {
-          req.headers = [];
-        }
-        variables.forEach((item) => {
-          req.headers.push({
-            key: item.name,
-            value: item.value,
-            enabled: true,
-          });
+      // 替换请求头中的环境变量
+      if (req.headers && req.headers.length > 0) {
+        req.headers.forEach((h) => {
+          if (h.value) {
+            h.value = environmentsStore.replaceVariables(h.value);
+          }
         });
       }
     },

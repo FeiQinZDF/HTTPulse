@@ -13,6 +13,7 @@ import { cloneDeep, debounce } from "lodash-es";
 
 import { useAPISettingStore } from "../../stores/api_setting";
 import { abortRequestID, HTTPRequest } from "../../commands/http_request";
+import { useGlobalReqHeaderStore } from "../../stores/global_req_header";
 import { showError } from "../../helpers/util";
 import { i18nCollection, i18nCommon } from "../../i18n";
 import { newDefaultAPISetting } from "../../commands/api_setting";
@@ -76,6 +77,32 @@ export default defineComponent({
           reqParams.value = apiSettingStore.getHTTPRequest(id);
           const data = apiSettingStore.findByID(id);
           interfaceName.value = data?.name || "";
+          
+          // 自动添加缺失的全局请求头
+          const globalHeaders = useGlobalReqHeaderStore().listEnable();
+          if (globalHeaders && globalHeaders.length > 0) {
+            if (!reqParams.value.headers) {
+              reqParams.value.headers = [];
+            }
+            // 构建已有请求头的集合（小写）
+            const existingHeaderKeys = new Set<string>();
+            reqParams.value.headers.forEach((h) => {
+              if (h.key) {
+                existingHeaderKeys.add(h.key.toLowerCase());
+              }
+            });
+            
+            // 只添加接口未配置的全局请求头
+            globalHeaders.forEach((item) => {
+              if (!existingHeaderKeys.has(item.name.toLowerCase())) {
+                reqParams.value.headers.push({
+                  key: item.name,
+                  value: item.value,
+                  enabled: true,
+                });
+              }
+            });
+          }
         } else {
           reqParams.value = {} as HTTPRequest;
           interfaceName.value = "";
