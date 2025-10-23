@@ -1,0 +1,128 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run dev",
+    "devPath": "http://localhost:3000",
+    "distDir": "../dist"
+  },
+  "package": {
+    "productName": "HTTPulse"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "fs": {
+        "readDir": true,
+        "readFile": true,
+        "writeFile": true,
+        "exists": true,
+        "scope": [
+          "$APP/*",
+          "$APP/*/*",
+          "$DOWNLOAD/*",
+          "$DOWNLOAD/*/*",
+          "$DESKTOP/*",
+          "$DESKTOP/*/*",
+          "$DOCUMENT/*",
+          "$DOCUMENT/*/*"
+        ]
+      },
+      "app": {
+        "all": false,
+        "hide": true,
+        "show": false
+      },
+      "window": {
+        "all": true
+      },
+      "dialog": {
+        "all": true
+      },
+      "os": {
+        "all":true 
+      },
+      "path": {
+        "all": true 
+      },
+      "process": {
+        "all": true
+      },
+      "clipboard": {
+        "all": true
+      }
+    },
+    "bundle": {
+      "active": true,
+      "category": "DeveloperTool",
+      "copyright": "© 2022-2023 Tree Xie. All rights reserved.",
+      "deb": {
+        "depends": []
+      },
+      "externalBin": [],
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "identifier": "com.bigtree.httpulse",
+      "longDescription": "",
+      "macOS": {
+        "entitlements": null,
+        "exceptionDomain": "",
+        "frameworks": [],
+        "providerShortName": null,
+        "signingIdentity": null
+      },
+      "resources": [],
+      "shortDescription": "",
+      "targets": "all",
+      "windows": {
+        "wix": {
+          "language": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        "webviewInstallMode": {
+          "silent": true,
+          "type": "embedBootstrapper"
+        },
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
+    },
+    "security": {
+      "csp": null
+    },
+    "updater": {
+      "active": false
+    },
+    "windows": [
+      {
+        "fileDropEnabled": false,
+        "fullscreen": false,
+        "height": 600,
+        "resizable": true,
+        "title": "Cyber API",
+        "width": 1200,
+        "center": true,
+        "visible": false 
+      },
+      {
+        "theme": "Dark",
+        "width": 500,
+        "height": 288,
+        "resizable": false,
+        "decorations": false,
+        "center": true,
+        "visible": false,
+        "url": "splashscreen.html",
+        "label": "splashscreen"
+      }
+    ]
+  }
+}

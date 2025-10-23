@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>清理 HTTPulse 测试数据</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #b71c1c;
+        }
+        .success {
+            background: #4caf50;
+        }
+        .success:hover {
+            background: #388e3c;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .info {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success-msg {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗑�?清理 HTTPulse 测试数据</h1>
+        <p>此工具用于清理浏览器中的 HTTPulse 测试数据（IndexedDB�?/p>
+        
+        <h3>⚠️ 注意</h3>
+        <ul>
+            <li>此操作将删除所有环境变量配�?/li>
+            <li>此操作将删除所�?API 配置</li>
+            <li>此操作将删除所有响应历史记�?/li>
+            <li><strong>此操作不可恢复！</strong></li>
+        </ul>
+
+        <button onclick="clearAllData()">清除所有数�?/button>
+        <button class="success" onclick="checkData()">检查当前数�?/button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function clearAllData() {
+            const result = document.getElementById('result');
+            result.style.display = 'block';
+            result.className = 'info';
+            result.textContent = '正在清理数据...';
+
+            try {
+                // 删除 HTTPulseDB 数据�?
+                await new Promise((resolve, reject) => {
+                    const request = indexedDB.deleteDatabase('HTTPulseDB');
+                    request.onsuccess = resolve;
+                    request.onerror = reject;
+                    request.onblocked = () => {
+                        result.className = 'error';
+                        result.textContent = '�?数据库被阻塞，请关闭所有打开�?HTTPulse 应用窗口后重�?;
+                    };
+                });
+
+                result.className = 'success-msg';
+                result.textContent = '�?所有测试数据已清除！IndexedDB 数据库已删除�?;
+                
+                console.log('�?HTTPulseDB 已删�?);
+            } catch (error) {
+                result.className = 'error';
+                result.textContent = `�?清理失败: ${error.message}`;
+                console.error('清理失败:', error);
+            }
+        }
+
+        async function checkData() {
+            const result = document.getElementById('result');
+            result.style.display = 'block';
+            result.className = 'info';
+
+            try {
+                const databases = await indexedDB.databases();
+                const cyberDB = databases.find(db => db.name === 'HTTPulseDB');
+                
+                if (cyberDB) {
+                    result.textContent = `📊 发现数据�? HTTPulseDB (版本 ${cyberDB.version})`;
+                } else {
+                    result.className = 'success-msg';
+                    result.textContent = '�?未发现测试数据，数据库是干净�?;
+                }
+            } catch (error) {
+                result.className = 'error';
+                result.textContent = `�?检查失�? ${error.message}`;
+            }
+        }
+
+        // 页面加载时自动检�?
+        window.onload = () => {
+            checkData();
+        };
+    </script>
+</body>
+</html>
+
